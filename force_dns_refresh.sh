@@ -14,8 +14,7 @@ force_dns_refresh() {
 
     tmp_resolveconf=`mktemp`
     # In case if C: is mounted somewhere else. My case is /c instead /mnt/c
-    c_destination=$(df | grep "C:" | awk '{print $NF}')
-    powershell="$c_destination/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+    powershell=$(wslpath "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe")
 
     dnssrvlist=`$powershell -Command '$x = Get-NetAdapter | Group-Object -AsHashtable -Property ifIndex; Get-DnsClientServerAddress -AddressFamily ipv4 | where {$x[$_.InterfaceIndex].Status -eq "Up"} | Select-Object -ExpandProperty ServerAddresses' | sed 's/\r//g'`
     {
